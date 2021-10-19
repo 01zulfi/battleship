@@ -8,23 +8,14 @@ describe("test Ship Factory", () => {
   });
 
   test("returns correct shipArray", () => {
-    expect(someShip).toHaveProperty("shipArray", Array(5).fill("live"));
+    expect(someShip).toHaveProperty("shipArray", Array(5).fill(""));
   });
 
   test("ship gets hit at correct position", () => {
     someShip.hit(4);
-    expect(someShip).toHaveProperty("shipArray", [
-      ...Array(4).fill("live"),
-      "dead",
-    ]);
+    expect(someShip).toHaveProperty("shipArray", [...Array(4).fill(""), "hit"]);
     someShip.hit(0);
-    expect(someShip).toHaveProperty("shipArray", [
-      "dead",
-      "live",
-      "live",
-      "live",
-      "dead",
-    ]);
+    expect(someShip).toHaveProperty("shipArray", ["hit", "", "", "", "hit"]);
   });
 
   test("isSunk method returns correct value", () => {

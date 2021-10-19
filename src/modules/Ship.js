@@ -1,13 +1,12 @@
 const Ship = (length) => {
-  let shipArray = Array(length).fill("live");
+  let shipArray = Array(length).fill("");
   const hit = (position) => {
-    shipArray = shipArray.map((element, index) => {
-      return index !== position ? element : "dead";
+    shipArray = [...shipArray].map((element, index) => {
+      return index === position ? "hit" : element;
     });
   };
   const isSunk = () => {
-    if ([...shipArray].indexOf("live") !== -1) return false;
-    return true;
+    return [...shipArray].every((element) => element === "hit");
   };
   return {
     get length() {
