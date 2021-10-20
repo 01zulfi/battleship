@@ -96,9 +96,11 @@ describe("test Gameboard", () => {
     ]);
   });
 
-  test("can receive attack", () => {
+  test("reports missed attack", () => {
     gameboard.receiveAttack(0, 9);
-    expect(gameboard.attackReportArray[0]).toMatch(/missed/);
+    gameboard.receiveAttack(3, 0);
+    gameboard.receiveAttack(3, 4);
+    expect(gameboard.attackReportArray).toEqual(["missed", "missed", "missed"]);
     expect(gameboard.gameboardArray).toEqual([
       [
         "anotherShip",
@@ -114,7 +116,34 @@ describe("test Gameboard", () => {
       ],
       Array(10).fill(""),
       Array(10).fill(""),
-      ["", "", "", "", "", "someOtherShip", "someOtherShip", "", "", ""],
+      ["X", "", "", "", "X", "someOtherShip", "someOtherShip", "", "", ""],
+      Array(10).fill(""),
+      Array(10).fill(""),
+      Array(10).fill(""),
+      Array(10).fill(""),
+      Array(10).fill(""),
+      Array(10).fill(""),
+    ]);
+  });
+
+  test("returns if attack is on a ship", () => {
+    gameboard.receiveAttack(3, 6);
+    expect(gameboard.gameboardArray).toEqual([
+      [
+        "anotherShip",
+        "anotherShip",
+        "anotherShip",
+        "anotherShip",
+        "anotherShip",
+        "",
+        "",
+        "",
+        "",
+        "X",
+      ],
+      Array(10).fill(""),
+      Array(10).fill(""),
+      ["X", "", "", "", "X", "someOtherShip", "someOtherShip", "", "", ""],
       Array(10).fill(""),
       Array(10).fill(""),
       Array(10).fill(""),

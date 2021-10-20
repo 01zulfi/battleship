@@ -2,7 +2,7 @@ const Gameboard = () => {
   const gameboardArray = Array(10).fill(Array(10).fill(""));
   let shipsOnTheBoard = [];
   const attackReportArray = [];
-  const checkIfShipPresent = (x, y, shipLength = 0) => {
+  const checkIfShipPresent = (x, y, shipLength = 1) => {
     const requiredArray = [...gameboardArray[x]].slice(y, y + shipLength);
     return [...requiredArray].some((element) => element !== "");
   };
@@ -29,9 +29,9 @@ const Gameboard = () => {
     if (checkIfShipPresent(x, y)) {
       return;
     }
-    const column = [...gameboardArray[x]];
-    column.fill("X", y, y + 1);
-    gameboardArray[x] = [...column];
+    const requiredCell = [...gameboardArray[x][y]];
+    requiredCell.push("X");
+    [gameboardArray[x][y]] = [...requiredCell];
     attackReportArray.push("missed");
   };
 
