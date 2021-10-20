@@ -1,7 +1,8 @@
 const Gameboard = () => {
   const gameboardArray = Array(10).fill(Array(10).fill(""));
   let shipsOnTheBoard = [];
-  const checkIfShipPresent = (x, y, shipLength) => {
+  const attackReportArray = [];
+  const checkIfShipPresent = (x, y, shipLength = 0) => {
     const requiredArray = [...gameboardArray[x]].slice(y, y + shipLength);
     return [...requiredArray].some((element) => element !== "");
   };
@@ -24,6 +25,16 @@ const Gameboard = () => {
       },
     };
   };
+  const receiveAttack = (x, y) => {
+    if (checkIfShipPresent(x, y)) {
+      return;
+    }
+    const column = [...gameboardArray[x]];
+    column.fill("X", y, y + 1);
+    gameboardArray[x] = [...column];
+    attackReportArray.push("missed");
+  };
+
   return {
     get gameboardArray() {
       return [...gameboardArray];
@@ -31,7 +42,11 @@ const Gameboard = () => {
     get shipsOnTheBoard() {
       return [...shipsOnTheBoard];
     },
+    get attackReportArray() {
+      return [...attackReportArray];
+    },
     add,
+    receiveAttack,
   };
 };
 
