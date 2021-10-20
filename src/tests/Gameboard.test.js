@@ -64,4 +64,35 @@ describe("test Gameboard", () => {
       Array(10).fill(""),
     ]);
   });
+
+  test("does not place ships if overlaps", () => {
+    gameboard.add({ name: "clashShip", length: 2 }).at(0, 3);
+    expect(gameboard.shipsOnTheBoard).not.toContainEqual({
+      name: "clashShip",
+      length: 2,
+    });
+    expect(gameboard.gameboardArray).toEqual([
+      [
+        "anotherShip",
+        "anotherShip",
+        "anotherShip",
+        "anotherShip",
+        "anotherShip",
+        "",
+        "",
+        "",
+        "",
+        "",
+      ],
+      Array(10).fill(""),
+      Array(10).fill(""),
+      ["", "", "", "", "", "someOtherShip", "someOtherShip", "", "", ""],
+      Array(10).fill(""),
+      Array(10).fill(""),
+      Array(10).fill(""),
+      Array(10).fill(""),
+      Array(10).fill(""),
+      Array(10).fill(""),
+    ]);
+  });
 });
