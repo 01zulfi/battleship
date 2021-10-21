@@ -1,52 +1,51 @@
 const Gameboard = () => {
-  const gameboardArray = Array(10).fill(Array(10).fill(""));
-  let shipsOnTheBoard = [];
-  const attackReportArray = [];
-  const checkIfShipPresent = (x, y, shipLength = 1) => {
-    const requiredArray = [...gameboardArray[x]].slice(y, y + shipLength);
-    return [...requiredArray].some((element) => element !== "");
+  const board = Array(10)
+    .fill("")
+    .map((element) => Array(10).fill(element));
+  const shipsArray = [];
+  const checkIfShipCanBeAdded = (x, y, shipLength) => {
+    const requiredSpace = [...board][x].slice(y, y + shipLength);
+    return requiredSpace.every((element) => element === "");
   };
-  const removeShipFromBoard = (ship) => {
-    shipsOnTheBoard = [...shipsOnTheBoard].filter(
-      (element) => element !== ship,
-    );
+  const addShipInArray = (ship) => {
+    shipsArray.push(ship);
   };
-  const add = (ship) => {
-    shipsOnTheBoard = [...shipsOnTheBoard, ship];
+  const addShipOnBoard = (x, y, ship) => {
+    board[x].fill(ship.name, y, y + ship.length);
+  };
+  const attackShip = (x, y) => {
+    // const shipName = board[x][y].name;
+    // let left = 0;
+    // for (let i = 0; i < 5; i++) {
+    //   if (board[x][y + i] === shipName) left++;
+    // }
+    //  shipName.hit(left + 1)
+  };
+  const at = (x, y) => {
     return {
-      at(x, y) {
-        if (checkIfShipPresent(x, y, ship.length)) {
-          removeShipFromBoard(ship);
+      add(ship) {
+        if (checkIfShipCanBeAdded(x, y, ship.length)) {
+          addShipInArray(ship);
+          addShipOnBoard(x, y, ship);
+        }
+      },
+      receiveAttack() {
+        if (board[x][y] !== "") {
+          attackShip(x, y);
           return;
         }
-        const column = [...gameboardArray[x]];
-        column.fill(ship.name, y, y + ship.length);
-        gameboardArray[x] = [...column];
+        board[x][y] = "X";
       },
     };
   };
-  const receiveAttack = (x, y) => {
-    if (checkIfShipPresent(x, y)) {
-      return;
-    }
-    const requiredCell = [...gameboardArray[x][y]];
-    requiredCell.push("X");
-    [gameboardArray[x][y]] = [...requiredCell];
-    attackReportArray.push("missed");
-  };
-
   return {
-    get gameboardArray() {
-      return [...gameboardArray];
+    get board() {
+      return [...board];
     },
-    get shipsOnTheBoard() {
-      return [...shipsOnTheBoard];
+    get shipsArray() {
+      return [...shipsArray];
     },
-    get attackReportArray() {
-      return [...attackReportArray];
-    },
-    add,
-    receiveAttack,
+    at,
   };
 };
 

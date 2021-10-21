@@ -3,20 +3,13 @@ import Gameboard from "../modules/Gameboard";
 describe("test Gameboard", () => {
   const gameboard = Gameboard();
 
-  test("adds a ship", () => {
-    gameboard.add({ name: "ship", length: 3 });
-    expect(gameboard).toHaveProperty("shipsOnTheBoard", [
-      { name: "ship", length: 3 },
-    ]);
-  });
-
   test("place ships on the board", () => {
-    gameboard.add({ name: "anotherShip", length: 5 }).at(0, 0);
-    expect(gameboard.shipsOnTheBoard).toContainEqual({
+    gameboard.at(0, 0).add({ name: "anotherShip", length: 5 });
+    expect(gameboard.shipsArray).toContainEqual({
       name: "anotherShip",
       length: 5,
     });
-    expect(gameboard.gameboardArray).toEqual([
+    expect(gameboard.board).toEqual([
       [
         "anotherShip",
         "anotherShip",
@@ -39,8 +32,8 @@ describe("test Gameboard", () => {
       Array(10).fill(""),
       Array(10).fill(""),
     ]);
-    gameboard.add({ name: "someOtherShip", length: 2 }).at(3, 5);
-    expect(gameboard.gameboardArray).toEqual([
+    gameboard.at(3, 5).add({ name: "someOtherShip", length: 2 });
+    expect(gameboard.board).toEqual([
       [
         "anotherShip",
         "anotherShip",
@@ -66,12 +59,12 @@ describe("test Gameboard", () => {
   });
 
   test("does not place ships if overlaps", () => {
-    gameboard.add({ name: "clashShip", length: 2 }).at(0, 3);
-    expect(gameboard.shipsOnTheBoard).not.toContainEqual({
+    gameboard.at(0, 3).add({ name: "clashShip", length: 2 });
+    expect(gameboard.shipsArray).not.toContainEqual({
       name: "clashShip",
       length: 2,
     });
-    expect(gameboard.gameboardArray).toEqual([
+    expect(gameboard.board).toEqual([
       [
         "anotherShip",
         "anotherShip",
@@ -96,12 +89,11 @@ describe("test Gameboard", () => {
     ]);
   });
 
-  test("reports missed attack", () => {
-    gameboard.receiveAttack(0, 9);
-    gameboard.receiveAttack(3, 0);
-    gameboard.receiveAttack(3, 4);
-    expect(gameboard.attackReportArray).toEqual(["missed", "missed", "missed"]);
-    expect(gameboard.gameboardArray).toEqual([
+  test("adds marker for missed attack", () => {
+    gameboard.at(0, 9).receiveAttack();
+    gameboard.at(3, 0).receiveAttack();
+    gameboard.at(3, 4).receiveAttack();
+    expect(gameboard.board).toEqual([
       [
         "anotherShip",
         "anotherShip",
@@ -127,8 +119,8 @@ describe("test Gameboard", () => {
   });
 
   test("returns if attack is on a ship", () => {
-    gameboard.receiveAttack(3, 6);
-    expect(gameboard.gameboardArray).toEqual([
+    gameboard.at(3, 6).receiveAttack();
+    expect(gameboard.board).toEqual([
       [
         "anotherShip",
         "anotherShip",
