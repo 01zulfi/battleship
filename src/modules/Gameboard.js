@@ -11,15 +11,34 @@ const Gameboard = () => {
     shipsArray.push(ship);
   };
   const addShipOnBoard = (x, y, ship) => {
-    board[x].fill(ship.name, y, y + ship.length);
+    board[x].fill(ship, y, y + ship.length);
   };
   const attackShip = (x, y) => {
-    // const shipName = board[x][y].name;
-    // let left = 0;
-    // for (let i = 0; i < 5; i++) {
-    //   if (board[x][y + i] === shipName) left++;
+    const ship = board[x][y];
+    if (y < ship.length) {
+      //  when ship touches the left boundary of board
+      ship.hit(y);
+    }
+    const targetArea = board[x].slice(0, y); // get left side from hit position
+    const shipLeftSide = targetArea.filter(
+      // filter to get hit position
+      (element) => element.name === ship.name,
+    );
+    ship.hit(shipLeftSide.length);
+    // const targetArea = [...board[x]].slice(y - ship.length, y + ship.length);
+    // const shipName = ship.name;
+    // const shipMaxLength = 6;
+    // let shipLengthLeftOfHit = 0;
+    // for (let i = 0; i < shipMaxLength; i += 1) {
+    //   const column = y - i;
+    //   if (column < 0) break;
+    //   if (board[x][column].name === shipName) shipLengthLeftOfHit += 1;
     // }
-    //  shipName.hit(left + 1)
+    // // const hitPosition = (() => {
+    // //   if (shipLengthLeftOfHit === 0) return 0;
+    // //   return shipLengthLeftOfHit + 1;
+    // // })();
+    // ship.hit(shipLengthLeftOfHit);
   };
   const at = (x, y) => {
     return {
