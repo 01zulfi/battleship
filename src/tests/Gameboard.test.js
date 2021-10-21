@@ -76,9 +76,6 @@ describe("test Gameboard", () => {
 
   test("calls hit method correctly if attack is on a ship", () => {
     gameboard.at(3, 6).receiveAttack();
-    // expect(ship1.hit.mock.calls.length).toBe(0);
-    // expect(ship2.hit.mock.calls.length).toBe(1);
-    expect(ship3.hit.mock.calls.length).toBe(0);
     expect(ship2.shipArray).toEqual(["", "hit"]);
     expect(gameboard.board).toEqual([
       [ship1, ship1, ship1, ship1, ship1, "", "", "", "", "X"],
@@ -93,7 +90,6 @@ describe("test Gameboard", () => {
       Array(10).fill(""),
     ]);
     gameboard.at(0, 0).receiveAttack();
-    // expect(ship1.name).toMatch(/firstShip/);
     expect(ship1.shipArray).toEqual(["hit", "", "", "", ""]);
   });
 });
