@@ -2,9 +2,36 @@ import Gameboard from "../modules/Gameboard";
 
 describe("test Gameboard", () => {
   const gameboard = Gameboard();
-  const ship1 = { name: "firstShip", length: 5, hit: jest.fn() };
-  const ship2 = { name: "secondShip", length: 2, hit: jest.fn() };
-  const ship3 = { name: "thirdShip", length: 2, hit: jest.fn() };
+  const ship1 = {
+    name: "firstShip",
+    length: 5,
+    hit: jest.fn((position) => {
+      ship1.shipArray[position] = "hit";
+      return "Hit";
+    }),
+    shipArray: ["", "", "", "", ""],
+    isHitAt: jest.fn((position) => {
+      return [...ship1.shipArray][position] === "hit";
+    }),
+  };
+  const ship2 = {
+    name: "secondShip",
+    length: 2,
+    hit: jest.fn((position) => {
+      ship1.shipArray[position] = "hit";
+      return "Hit";
+    }),
+    shipArray: ["", ""],
+    isHitAt: jest.fn((position) => {
+      return [...ship1.shipArray][position] === "hit";
+    }),
+  };
+  const ship3 = {
+    name: "thirdShip",
+    length: 2,
+    hit: jest.fn(),
+    shipArray: ["", ""],
+  };
 
   test("place ships on the board", () => {
     gameboard.at(0, 0).add(ship1);
@@ -83,5 +110,16 @@ describe("test Gameboard", () => {
     expect(ship1.hit.mock.calls[0][0]).toBe(0);
     expect(ship1.hit.mock.calls[1][0]).toBe(4);
     expect(ship2.hit.mock.calls[0][0]).toBe(1);
+  });
+
+  test("returns 'illegal' for illegal attacks", () => {
+    gameboard.at(0, 0).receiveAttack();
+    const illegalOne = gameboard.latestAttackStatus;
+    gameboard.at(3, 4).receiveAttack();
+    const illegalTwo = gameboard.latestAttackStatus;
+    expect(ship1.hit.mock.calls.length).toBe(2);
+    expect(ship1.isHitAt.mock.calls.length).toBe(3);
+    expect(illegalOne).toMatch(/illegal/);
+    expect(illegalTwo).toMatch(/illegal/);
   });
 });

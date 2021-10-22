@@ -5,6 +5,8 @@ const Gameboard = () => {
 
   const shipsArray = [];
 
+  let latestAttackStatus = "";
+
   const checkIfShipCanBeAdded = (x, y, shipLength) => {
     const requiredSpace = [...board][x].slice(y, y + shipLength);
     return requiredSpace.every((element) => element === "");
@@ -20,19 +22,25 @@ const Gameboard = () => {
 
   const attackShip = (x, y) => {
     const ship = board[x][y];
-    //  when ship touches the left boundary of board
+    let hitPosition = 0;
     if (y < ship.length) {
-      ship.hit(y);
+      // ship touches left boundary
+      hitPosition = y;
+    } else {
+      // ship has space from left boundary
+      const targetArea = board[x].slice(0, y); // get left side from hit position
+      // filter to get hit position
+      const shipLeftSide = targetArea.filter(
+        (element) => element.name === ship.name,
+      );
+      hitPosition = shipLeftSide.length;
+    }
+    if (ship.isHitAt(hitPosition)) {
+      latestAttackStatus = "illegal";
       return;
     }
-    // when ship has space from left boundary of board
-    const targetArea = board[x].slice(0, y); // get left side from hit position
-    const shipLeftSide = targetArea.filter(
-      // filter to get hit position
-      (element) => element.name === ship.name,
-    );
-    const hitPosition = shipLeftSide.length;
     ship.hit(hitPosition);
+    latestAttackStatus = "success";
   };
 
   const at = (x, y) => {
@@ -44,11 +52,16 @@ const Gameboard = () => {
         }
       },
       receiveAttack() {
-        if (board[x][y] !== "") {
+        if (typeof board[x][y] === "object") {
           attackShip(x, y);
           return;
         }
+        if (board[x][y] === "X") {
+          latestAttackStatus = "illegal";
+          return;
+        }
         board[x][y] = "X";
+        latestAttackStatus = "success";
       },
     };
   };
@@ -59,6 +72,9 @@ const Gameboard = () => {
     },
     get shipsArray() {
       return [...shipsArray];
+    },
+    get latestAttackStatus() {
+      return latestAttackStatus;
     },
     at,
   };
