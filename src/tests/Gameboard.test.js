@@ -1,12 +1,9 @@
 import Gameboard from "../modules/Gameboard";
-import Ship from "../modules/Ship";
 
 describe("test Gameboard", () => {
   const gameboard = Gameboard();
-  const ship1 = Ship(5);
-  const ship2 = Ship(2);
-  ship1.name = "firstShip";
-  ship2.name = "secondShip";
+  const ship1 = { name: "firstShip", length: 5, hit: jest.fn() };
+  const ship2 = { name: "secondShip", length: 2, hit: jest.fn() };
   const ship3 = { name: "thirdShip", length: 2, hit: jest.fn() };
 
   test("place ships on the board", () => {
@@ -74,22 +71,17 @@ describe("test Gameboard", () => {
     ]);
   });
 
-  test("calls hit method correctly if attack is on a ship", () => {
-    gameboard.at(3, 6).receiveAttack();
-    expect(ship2.shipArray).toEqual(["", "hit"]);
-    expect(gameboard.board).toEqual([
-      [ship1, ship1, ship1, ship1, ship1, "", "", "", "", "X"],
-      Array(10).fill(""),
-      Array(10).fill(""),
-      ["X", "", "", "", "X", ship2, ship2, "", "", ""],
-      Array(10).fill(""),
-      Array(10).fill(""),
-      Array(10).fill(""),
-      Array(10).fill(""),
-      Array(10).fill(""),
-      Array(10).fill(""),
-    ]);
+  test("calls hit method if attack is on a ship", () => {
     gameboard.at(0, 0).receiveAttack();
-    expect(ship1.shipArray).toEqual(["hit", "", "", "", ""]);
+    gameboard.at(0, 4).receiveAttack();
+    gameboard.at(3, 6).receiveAttack();
+    expect(ship1.hit.mock.calls.length).toBe(2);
+    expect(ship2.hit.mock.calls.length).toBe(1);
+  });
+
+  test("calls hit method with correct argument", () => {
+    expect(ship1.hit.mock.calls[0][0]).toBe(0);
+    expect(ship1.hit.mock.calls[1][0]).toBe(4);
+    expect(ship2.hit.mock.calls[0][0]).toBe(1);
   });
 });
