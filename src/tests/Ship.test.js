@@ -18,6 +18,11 @@ describe("test Ship Factory", () => {
     expect(someShip).toHaveProperty("shipArray", ["hit", "", "", "", "hit"]);
   });
 
+  test("returns correct boolean for isHitAt", () => {
+    expect(someShip.isHitAt(0)).toEqual(true);
+    expect(someShip.isHitAt(3)).toBe(false);
+  });
+
   test("isSunk method returns correct value", () => {
     expect(someShip.isSunk()).toBe(false);
     someShip.hit(1);

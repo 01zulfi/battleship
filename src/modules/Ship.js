@@ -1,13 +1,20 @@
 const Ship = (length) => {
   let shipArray = Array(length).fill("");
+
   const hit = (position) => {
     shipArray = [...shipArray].map((element, index) => {
       return index === position ? "hit" : element;
     });
   };
+
+  const isHitAt = (position) => {
+    return [...shipArray][position] === "hit";
+  };
+
   const isSunk = () => {
     return [...shipArray].every((element) => element === "hit");
   };
+
   return {
     get length() {
       return length;
@@ -16,6 +23,7 @@ const Ship = (length) => {
       return [...shipArray];
     },
     hit,
+    isHitAt,
     isSunk,
   };
 };
