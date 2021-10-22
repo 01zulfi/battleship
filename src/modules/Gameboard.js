@@ -28,8 +28,9 @@ const Gameboard = () => {
       hitPosition = y;
     } else {
       // ship has space from left boundary
-      const targetArea = board[x].slice(0, y); // get left side from hit position
-      // filter to get hit position
+      // get left of gameboard from hit position
+      const targetArea = board[x].slice(0, y);
+      // filter to get left of ship from hit position
       const shipLeftSide = targetArea.filter(
         (element) => element.name === ship.name,
       );
@@ -43,29 +44,6 @@ const Gameboard = () => {
     latestAttackStatus = "success";
   };
 
-  const at = (x, y) => {
-    return {
-      add(ship) {
-        if (checkIfShipCanBeAdded(x, y, ship.length)) {
-          addShipInArray(ship);
-          addShipOnBoard(x, y, ship);
-        }
-      },
-      receiveAttack() {
-        if (typeof board[x][y] === "object") {
-          attackShip(x, y);
-          return;
-        }
-        if (board[x][y] === "X") {
-          latestAttackStatus = "illegal";
-          return;
-        }
-        board[x][y] = "X";
-        latestAttackStatus = "success";
-      },
-    };
-  };
-
   return {
     get board() {
       return [...board];
@@ -76,7 +54,31 @@ const Gameboard = () => {
     get latestAttackStatus() {
       return latestAttackStatus;
     },
-    at,
+    at(x, y) {
+      return {
+        add(ship) {
+          if (checkIfShipCanBeAdded(x, y, ship.length)) {
+            addShipInArray(ship);
+            addShipOnBoard(x, y, ship);
+          }
+        },
+        receiveAttack() {
+          if (typeof board[x][y] === "object") {
+            attackShip(x, y);
+            return;
+          }
+          if (board[x][y] === "X") {
+            latestAttackStatus = "illegal";
+            return;
+          }
+          board[x][y] = "X";
+          latestAttackStatus = "success";
+        },
+      };
+    },
+    areAllShipsSunk() {
+      return [...shipsArray].every((ship) => ship.isSunk() === true);
+    },
   };
 };
 
