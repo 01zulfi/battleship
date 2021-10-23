@@ -1,7 +1,7 @@
 import Ship from "../modules/Ship";
 
 describe("test Ship Factory", () => {
-  const someShip = Ship(5);
+  const someShip = Ship("someShip", 5);
 
   test("returns ship of correct length", () => {
     expect(someShip).toHaveProperty("length", 5);

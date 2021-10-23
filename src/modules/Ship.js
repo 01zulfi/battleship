@@ -1,4 +1,4 @@
-const Ship = (length) => {
+const Ship = (name, length) => {
   let shipArray = Array(length).fill("");
 
   const hit = (position) => {
@@ -16,6 +16,9 @@ const Ship = (length) => {
   };
 
   return {
+    get name() {
+      return name;
+    },
     get length() {
       return length;
     },
