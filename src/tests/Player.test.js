@@ -100,3 +100,14 @@ test("computer can autoplay correctly", () => {
 
   expect(hits.length).toBe(2);
 });
+
+test("computer can add ships in random coordinates", () => {
+  const computer = Player("computer", Gameboard());
+  computer.autoAdd({ length: 5 });
+  computer.autoAdd({ length: 4 });
+  computer.autoAdd({ length: 3 });
+  computer.autoAdd({ length: 2 });
+  computer.autoAdd({ length: 1 });
+  expect(computer.fleet.shipsArray).toContainEqual({ length: 5 });
+  expect(computer.fleet.shipsArray.length).toBe(5);
+});

@@ -23,6 +23,15 @@ const Player = (name, fleet) => {
         },
       };
     },
+    autoAdd(ship) {
+      const x = Math.floor(Math.random() * 10);
+      const y = Math.floor(Math.random() * 10);
+      fleet.at(x, y).add(ship);
+
+      if (!fleet.shipsArray.includes(ship)) {
+        this.autoAdd(ship);
+      }
+    },
   };
 };
 
