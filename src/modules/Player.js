@@ -18,8 +18,9 @@ const Player = (name, fleet) => {
           enemy.fleet.at(x, y).receiveAttack(x, y);
 
           if (enemy.fleet.latestAttackStatus === "illegal") {
-            this.auto();
+            return this.auto();
           }
+          return [x, y];
         },
       };
     },
