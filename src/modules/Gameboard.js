@@ -9,6 +9,7 @@ const Gameboard = () => {
 
   const checkIfShipCanBeAdded = (x, y, shipLength) => {
     const requiredSpace = [...board][x].slice(y, y + shipLength);
+    if (requiredSpace.length !== shipLength) return false;
     return requiredSpace.every((element) => element === "");
   };
 
