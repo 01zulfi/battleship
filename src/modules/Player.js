@@ -15,6 +15,16 @@ const Player = (name) => {
         at(x, y) {
           enemy.fleet.at(x, y).receiveAttack(x, y);
         },
+        auto() {
+          const x = Math.floor(Math.random() * 10);
+          const y = Math.floor(Math.random() * 10);
+
+          enemy.fleet.at(x, y).receiveAttack(x, y);
+
+          if (enemy.fleet.latestAttackStatus === "illegal") {
+            this.auto();
+          }
+        },
       };
     },
   };

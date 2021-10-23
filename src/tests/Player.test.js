@@ -83,3 +83,19 @@ describe("test player", () => {
     expect(player.fleet.shipsArray[0].shipArray[1]).toMatch(/hit/);
   });
 });
+
+test.only("computer can autoplay correctly", () => {
+  const player = Player("player");
+  const computer = Player("computer");
+
+  computer.attack(player).auto();
+  computer.attack(player).auto();
+
+  const hits = [];
+
+  for (let i = 0; i < 10; i += 1) {
+    hits.push(...player.fleet.board[i].filter((element) => element === "X"));
+  }
+
+  expect(hits.length).toBe(2);
+});
