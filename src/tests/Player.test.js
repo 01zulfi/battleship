@@ -1,8 +1,9 @@
+import Gameboard from "../modules/Gameboard";
 import Player from "../modules/Player";
 
 describe("test player", () => {
-  const player = Player("player");
-  const computer = Player("computer");
+  const player = Player("player", Gameboard());
+  const computer = Player("computer", Gameboard());
 
   const ship1 = {
     name: "firstShip",
@@ -84,9 +85,9 @@ describe("test player", () => {
   });
 });
 
-test.only("computer can autoplay correctly", () => {
-  const player = Player("player");
-  const computer = Player("computer");
+test("computer can autoplay correctly", () => {
+  const player = Player("player", Gameboard());
+  const computer = Player("computer", Gameboard());
 
   computer.attack(player).auto();
   computer.attack(player).auto();

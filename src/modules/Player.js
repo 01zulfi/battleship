@@ -1,8 +1,4 @@
-import Gameboard from "./Gameboard";
-
-const Player = (name) => {
-  const fleet = Gameboard();
-
+const Player = (name, fleet) => {
   return {
     get name() {
       return name;
