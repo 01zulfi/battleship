@@ -30,3 +30,20 @@
   border-bottom: 0;
   border-top: 0;
 }
+
+.player-one-gameboard .rows .columns.ship {
+  background-color: gray;
+}
+
+.player-one-gameboard .rows .columns.ship.hit,
+.player-two-gameboard .rows .columns.ship.hit {
+  background: red;
+}
+
+.player-one-gameboard .rows .columns.hit,
+.player-two-gameboard .rows .columns.hit {
+  background: green;
+  opacity: 0.7;
+  pointer-events: none;
+  cursor: not-allowed;
+}
