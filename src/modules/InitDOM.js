@@ -41,7 +41,7 @@ const createGameboard = (name, p) => {
       if (typeof board[i][j] === "object") {
         column.classList.add("ship");
       }
-      column.addEventListener("click", sendAttackSignal);
+      grid.addEventListener("click", sendAttackSignal);
       row.append(column);
     }
     grid.append(row);
