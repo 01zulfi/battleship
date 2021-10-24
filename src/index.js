@@ -1,5 +1,6 @@
 import "./styles/style.css";
-import appendGameboards from "./modules/InitDOM";
-import "./modules/Game";
+import gameModuleObject from "./modules/Game";
+import DOMModuleObject from "./modules/DOM";
 
-appendGameboards();
+DOMModuleObject.execute();
+gameModuleObject.execute();

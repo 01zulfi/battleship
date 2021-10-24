@@ -1,35 +1,22 @@
 import DOMFactory from "./DOMFactory";
-import { player, computer } from "./Game";
+import pubsub from "./Pubsub";
 
-const computerAttack = () => {
-  const [x, y] = computer.attack(player).auto();
+const receiveComputerAttack = ([x, y]) => {
   const playerBoard = document.querySelector(".player-one-gameboard");
   const row = playerBoard.querySelector(`[data-rows="${x}"]`);
   const column = row.querySelector(`[data-columns="${y}"]`);
   column.classList.add("hit");
 };
 
-const sendAttackSignal = (event) => {
-  if (
-    !event.target.parentNode.parentNode.classList.contains(
-      "player-two-gameboard",
-    )
-  ) {
-    return;
-  }
+const sendPlayerAttack = (event) => {
+  if (!event.target.classList.contains("columns")) return;
   event.target.classList.add("hit");
   const x = event.target.parentNode.getAttribute("data-rows");
   const y = event.target.getAttribute("data-columns");
-  player.attack(computer).at(x, y);
-  computerAttack();
-  setTimeout(() => {
-    if (player.fleet.areAllShipsSunk()) alert("computer won");
-    if (computer.fleet.areAllShipsSunk()) alert("player won");
-  }, 0);
+  pubsub.publish("player-attack-ship", [x, y]);
 };
 
-const createGameboard = (name, p) => {
-  const { board } = p.fleet;
+const createGameboard = (name, board) => {
   const grid = DOMFactory("div", { className: name });
   for (let i = 0; i < 10; i += 1) {
     const row = DOMFactory("div", { className: "rows", "data-rows": i });
@@ -41,18 +28,27 @@ const createGameboard = (name, p) => {
       if (typeof board[i][j] === "object") {
         column.classList.add("ship");
       }
-      grid.addEventListener("click", sendAttackSignal);
       row.append(column);
     }
     grid.append(row);
   }
+  if (name === "player-two-gameboard") {
+    grid.addEventListener("click", sendPlayerAttack);
+  }
   return grid;
 };
 
-const appendGameboards = () => {
+const appendGameboards = ([playerBoard, computerBoard]) => {
   const gameboards = document.querySelector(".gameboards");
-  gameboards.append(createGameboard("player-one-gameboard", player));
-  gameboards.append(createGameboard("player-two-gameboard", computer));
+  gameboards.append(createGameboard("player-one-gameboard", playerBoard));
+  gameboards.append(createGameboard("player-two-gameboard", computerBoard));
 };
 
-export default appendGameboards;
+const DOMModuleObject = {
+  execute() {
+    pubsub.subscribe("fleets-initialized", appendGameboards);
+    pubsub.subscribe("computer-attack-ship", receiveComputerAttack);
+  },
+};
+
+export default DOMModuleObject;

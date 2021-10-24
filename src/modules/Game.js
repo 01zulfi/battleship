@@ -1,6 +1,7 @@
 import Ship from "./Ship";
 import Gameboard from "./Gameboard";
 import Player from "./Player";
+import pubsub from "./Pubsub";
 
 const player = Player("player", Gameboard());
 const computer = Player("computer", Gameboard());
@@ -26,7 +27,25 @@ const addAllShips = () => {
   addComputerShips();
 };
 
-addAllShips();
+const computerAttackShip = () => {
+  const [x1, y1] = computer.attack(player).auto();
+  pubsub.publish("computer-attack-ship", [x1, y1]);
+};
 
-export default addAllShips;
-export { player, computer };
+const playerAttackShip = ([x, y]) => {
+  player.attack(computer).at(x, y);
+  computerAttackShip();
+};
+
+const gameModuleObject = {
+  execute() {
+    addAllShips();
+    pubsub.publish("fleets-initialized", [
+      player.fleet.board,
+      computer.fleet.board,
+    ]);
+    pubsub.subscribe("player-attack-ship", playerAttackShip);
+  },
+};
+
+export default gameModuleObject;
