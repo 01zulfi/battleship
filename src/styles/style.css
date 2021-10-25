@@ -1,34 +1,49 @@
-.gameboards {
+.gameboards,
+div.input-modal {
   display: flex;
   flex-direction: row;
   gap: 1vw;
 }
 
+.input-modal {
+  margin: 20px;
+}
+
+.hover {
+  background-color: gray;
+}
+
+.red {
+  background-color: red;
+}
+
 .gameboards .player-one-gameboard,
-.gameboards .player-two-gameboard {
-  width: 35vw;
+.gameboards .player-two-gameboard,
+.inputs-gameboard {
+  width: 38vw;
   aspect-ratio: 1;
   display: flex;
+  gap: 4px;
   flex-direction: column;
   justify-content: flex-start;
   align-items: flex-start;
 }
 
 .player-one-gameboard .rows,
-.player-two-gameboard .rows {
-  border: 1px solid black;
+.player-two-gameboard .rows,
+.inputs-gameboard .rows {
   flex: 1;
+  gap: 4px;
   display: flex;
   width: 100%;
   height: fit-content;
 }
 
 .player-one-gameboard .columns,
-.player-two-gameboard .columns {
+.player-two-gameboard .columns,
+.inputs-gameboard .columns {
   flex: 1;
   border: 1px solid black;
-  border-bottom: 0;
-  border-top: 0;
 }
 
 .player-one-gameboard .rows .columns.ship {

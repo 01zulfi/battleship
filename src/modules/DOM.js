@@ -25,7 +25,7 @@ const createGameboard = (name, board) => {
         className: "columns",
         "data-columns": j,
       });
-      if (typeof board[i][j] === "object") {
+      if (board.length !== 0 && typeof board[i][j] === "object") {
         column.classList.add("ship");
       }
       row.append(column);
@@ -51,8 +51,61 @@ const showAlert = (victor) => {
   alert(victor);
 };
 
+const renderInputModal = () => {
+  const inputModalDiv = document.querySelector(".input-modal");
+  const inputGrid = createGameboard("inputs-gameboard", []);
+  inputModalDiv.append(inputGrid);
+};
+
+const inputShips = () => {
+  const inputGrid = document.querySelector(".inputs-gameboard");
+  // const ships = [
+  //   { name: "carrier", length: 5 },
+  //   { name: "destroyer", length: 4 },
+  //   { name: "cruiser", length: 3 },
+  //   { name: "submarine", length: 3 },
+  //   { name: "patrol", length: 2 },
+  // ];
+  [...inputGrid.querySelectorAll(".columns")].forEach((cell) =>
+    cell.addEventListener("mouseenter", () => {
+      const column = Number(cell.getAttribute("data-columns"));
+      const cells = [];
+      for (let i = 0; i < 5; i += 1) {
+        const col = cell.parentNode.querySelector(
+          `[data-columns="${column + i}"]`,
+        );
+        cells.push(col);
+      }
+      if (cells.some((item) => item === null)) {
+        cell.classList.add("red");
+        return;
+      }
+      cells.forEach((item) => item.classList.add("hover"));
+    }),
+  );
+  [...inputGrid.querySelectorAll(".columns")].forEach((cell) =>
+    cell.addEventListener("mouseleave", () => {
+      const column = Number(cell.getAttribute("data-columns"));
+      const cells = [];
+      for (let i = 0; i < 5; i += 1) {
+        const col = cell.parentNode.querySelector(
+          `[data-columns="${column + i}"]`,
+        );
+        cells.push(col);
+      }
+      if (cells.some((item) => item === null)) {
+        cell.classList.remove("red");
+        return;
+      }
+      cells.forEach((item) => item.classList.remove("hover"));
+    }),
+  );
+};
+
 const DOMModuleObject = {
   execute() {
+    renderInputModal();
+    inputShips();
     pubsub.subscribe("fleets-initialized", appendGameboards);
     pubsub.subscribe("computer-attack-ship", receiveComputerAttack);
     pubsub.subscribe("game-end", showAlert);
