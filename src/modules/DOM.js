@@ -80,6 +80,10 @@ const inputShips = () => {
         cell.classList.add("red");
         return;
       }
+      if (cells.some((item) => item.classList.contains("clicked"))) {
+        cell.classList.add("red");
+        return;
+      }
       cells.forEach((item) => item.classList.add("hover"));
     }),
   );
@@ -97,9 +101,19 @@ const inputShips = () => {
         cell.classList.remove("red");
         return;
       }
+      if (cells.some((item) => item.classList.contains("clicked"))) {
+        cell.classList.remove("red");
+      }
       cells.forEach((item) => item.classList.remove("hover"));
     }),
   );
+  inputGrid.addEventListener("click", (event) => {
+    if (!event.target.classList.contains("columns")) return;
+    if (!event.target.classList.contains("hover")) return;
+    if (event.target.classList.contains("clicked")) return;
+    const required = inputGrid.querySelectorAll(".columns.hover");
+    required.forEach((item) => item.classList.add("clicked"));
+  });
 };
 
 const DOMModuleObject = {
