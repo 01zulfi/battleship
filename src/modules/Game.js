@@ -30,10 +30,16 @@ const addAllShips = () => {
 const computerAttackShip = () => {
   const [x1, y1] = computer.attack(player).auto();
   pubsub.publish("computer-attack-ship", [x1, y1]);
+  if (player.fleet.areAllShipsSunk()) {
+    pubsub.publish("game-end", "computer won");
+  }
 };
 
 const playerAttackShip = ([x, y]) => {
   player.attack(computer).at(x, y);
+  if (computer.fleet.areAllShipsSunk()) {
+    pubsub.publish("game-end", "player won");
+  }
   computerAttackShip();
 };
 

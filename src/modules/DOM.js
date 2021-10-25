@@ -44,10 +44,18 @@ const appendGameboards = ([playerBoard, computerBoard]) => {
   gameboards.append(createGameboard("player-two-gameboard", computerBoard));
 };
 
+const showAlert = (victor) => {
+  document
+    .querySelector(".player-two-gameboard")
+    .removeEventListener("click", sendPlayerAttack);
+  alert(victor);
+};
+
 const DOMModuleObject = {
   execute() {
     pubsub.subscribe("fleets-initialized", appendGameboards);
     pubsub.subscribe("computer-attack-ship", receiveComputerAttack);
+    pubsub.subscribe("game-end", showAlert);
   },
 };
 
