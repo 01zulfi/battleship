@@ -59,6 +59,55 @@ const renderInputModal = () => {
 
 const inputShips = () => {
   const inputGrid = document.querySelector(".inputs-gameboard");
+  const columns = [...inputGrid.querySelectorAll(".columns")];
+
+  const mouseenterCallback = (event, length) => {
+    const column = Number(event.target.getAttribute("data-columns"));
+    const cells = [];
+    for (let i = 0; i < length; i += 1) {
+      const col = event.target.parentNode.querySelector(
+        `[data-columns="${column + i}"]`,
+      );
+      cells.push(col);
+    }
+    if (cells.some((item) => item === null)) {
+      event.target.classList.add("red");
+      return;
+    }
+    if (cells.some((item) => item.classList.contains("clicked"))) {
+      event.target.classList.add("red");
+      return;
+    }
+    cells.forEach((item) => item.classList.add("hover"));
+  };
+
+  const mouseleaveCallback = (event, length) => {
+    const column = Number(event.target.getAttribute("data-columns"));
+    const cells = [];
+    for (let i = 0; i < length; i += 1) {
+      const col = event.target.parentNode.querySelector(
+        `[data-columns="${column + i}"]`,
+      );
+      cells.push(col);
+    }
+    if (cells.some((item) => item === null)) {
+      event.target.classList.remove("red");
+      return;
+    }
+    if (cells.some((item) => item.classList.contains("clicked"))) {
+      event.target.classList.remove("red");
+    }
+    cells.forEach((item) => item.classList.remove("hover"));
+  };
+
+  const clickCallback = (event, name) => {
+    if (!event.target.classList.contains("columns")) return;
+    if (!event.target.classList.contains("hover")) return;
+    if (event.target.classList.contains("clicked")) return;
+    const required = inputGrid.querySelectorAll(".columns.hover");
+    required.forEach((item) => item.classList.add(name));
+  };
+
   // const ships = [
   //   { name: "carrier", length: 5 },
   //   { name: "destroyer", length: 4 },
@@ -66,53 +115,21 @@ const inputShips = () => {
   //   { name: "submarine", length: 3 },
   //   { name: "patrol", length: 2 },
   // ];
-  [...inputGrid.querySelectorAll(".columns")].forEach((cell) =>
-    cell.addEventListener("mouseenter", () => {
-      const column = Number(cell.getAttribute("data-columns"));
-      const cells = [];
-      for (let i = 0; i < 5; i += 1) {
-        const col = cell.parentNode.querySelector(
-          `[data-columns="${column + i}"]`,
-        );
-        cells.push(col);
-      }
-      if (cells.some((item) => item === null)) {
-        cell.classList.add("red");
-        return;
-      }
-      if (cells.some((item) => item.classList.contains("clicked"))) {
-        cell.classList.add("red");
-        return;
-      }
-      cells.forEach((item) => item.classList.add("hover"));
+
+  columns.forEach((cell) =>
+    cell.addEventListener("mouseenter", (event) => {
+      mouseenterCallback(event, 5);
     }),
   );
-  [...inputGrid.querySelectorAll(".columns")].forEach((cell) =>
-    cell.addEventListener("mouseleave", () => {
-      const column = Number(cell.getAttribute("data-columns"));
-      const cells = [];
-      for (let i = 0; i < 5; i += 1) {
-        const col = cell.parentNode.querySelector(
-          `[data-columns="${column + i}"]`,
-        );
-        cells.push(col);
-      }
-      if (cells.some((item) => item === null)) {
-        cell.classList.remove("red");
-        return;
-      }
-      if (cells.some((item) => item.classList.contains("clicked"))) {
-        cell.classList.remove("red");
-      }
-      cells.forEach((item) => item.classList.remove("hover"));
+
+  columns.forEach((cell) =>
+    cell.addEventListener("mouseleave", (event) => {
+      mouseleaveCallback(event, 5);
     }),
   );
+
   inputGrid.addEventListener("click", (event) => {
-    if (!event.target.classList.contains("columns")) return;
-    if (!event.target.classList.contains("hover")) return;
-    if (event.target.classList.contains("clicked")) return;
-    const required = inputGrid.querySelectorAll(".columns.hover");
-    required.forEach((item) => item.classList.add("clicked"));
+    clickCallback(event, "clicked");
   });
 };
 
