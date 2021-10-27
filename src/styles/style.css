@@ -1,5 +1,4 @@
-.gameboards,
-div.input-modal {
+.gameboards {
   display: flex;
   flex-direction: row;
   gap: 1vw;
@@ -7,6 +6,9 @@ div.input-modal {
 
 .input-modal {
   margin: 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
 .input-modal .hover {
@@ -20,6 +22,21 @@ div.input-modal {
 .input-modal .red,
 .input-modal .red.ship {
   background-color: red;
+}
+
+.ready {
+  pointer-events: none;
+  opacity: 0.7;
+  border: 2px solid black;
+}
+
+.ready.active {
+  pointer-events: auto;
+  opacity: 1;
+}
+
+.ready.active:hover {
+  cursor: pointer;
 }
 
 .gameboards .player-one-gameboard,

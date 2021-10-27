@@ -95,17 +95,33 @@ const inputShips = () => {
       .forEach((item) => item.classList.remove("hover"));
   };
 
+  const removeInputModal = () => {
+    const inputModal = document.querySelector(".input-modal");
+    inputModal.remove();
+    pubsub.publish("input-ships", ships);
+  };
+
+  const activateReadyDiv = () => {
+    const readyDiv = document.querySelector(".ready");
+    readyDiv.classList.add("active");
+    readyDiv.addEventListener("click", removeInputModal);
+  };
+
   const clickCallback = (event) => {
+    if (!event.target.classList.contains("columns")) return;
     if (event.target.classList.contains("red")) return;
     const shipToAdd = ships.find((ship) => !ship.added);
+    if (!shipToAdd) return;
     if (shipToAdd.length === 2) {
       columns.forEach((cell) =>
         cell.removeEventListener("mouseenter", mouseenterCallback),
       );
+      activateReadyDiv();
     }
-    if (!shipToAdd) return;
     const shipToAddIndex = ships.indexOf(shipToAdd);
     shipToAdd.added = true;
+    shipToAdd.x = Number(event.target.parentNode.getAttribute("data-rows"));
+    shipToAdd.y = Number(event.target.getAttribute("data-columns"));
     const required = inputGrid.querySelectorAll(".columns.hover");
     required.forEach((item) => item.classList.add("ship"));
     required.forEach((item) => item.classList.add(shipToAdd.name));
