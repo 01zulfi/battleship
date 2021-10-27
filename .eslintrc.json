@@ -13,6 +13,7 @@
   "rules": {
     "prettier/prettier": "warn",
     "no-restricted-syntax": "off",
-    "no-param-reassign": "warn"
+    "no-param-reassign": "warn",
+    "no-return-assign": "warn"
   }
 }
