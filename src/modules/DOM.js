@@ -60,11 +60,18 @@ const renderInputModal = () => {
 const inputShips = () => {
   const inputGrid = document.querySelector(".inputs-gameboard");
   const columns = [...inputGrid.querySelectorAll(".columns")];
+  const ships = [
+    { name: "carrier", length: 5, added: false },
+    { name: "destroyer", length: 4, added: false },
+    { name: "cruiser", length: 3, added: false },
+    { name: "submarine", length: 3, added: false },
+    { name: "patrol", length: 2, added: false },
+  ];
 
-  const mouseenterCallback = (event, length) => {
+  const mouseenterCallback = (event) => {
     const column = Number(event.target.getAttribute("data-columns"));
     const cells = [];
-    for (let i = 0; i < length; i += 1) {
+    for (let i = 0; i < event.currentTarget.shipLength; i += 1) {
       const col = event.target.parentNode.querySelector(
         `[data-columns="${column + i}"]`,
       );
@@ -74,63 +81,51 @@ const inputShips = () => {
       event.target.classList.add("red");
       return;
     }
-    if (cells.some((item) => item.classList.contains("clicked"))) {
+    if (cells.some((item) => item.classList.contains("ship"))) {
       event.target.classList.add("red");
       return;
     }
     cells.forEach((item) => item.classList.add("hover"));
   };
 
-  const mouseleaveCallback = (event, length) => {
-    const column = Number(event.target.getAttribute("data-columns"));
-    const cells = [];
-    for (let i = 0; i < length; i += 1) {
-      const col = event.target.parentNode.querySelector(
-        `[data-columns="${column + i}"]`,
+  const mouseleaveCallback = (event) => {
+    event.target.classList.remove("red");
+    document
+      .querySelectorAll(".columns")
+      .forEach((item) => item.classList.remove("hover"));
+  };
+
+  const clickCallback = (event) => {
+    if (event.target.classList.contains("red")) return;
+    const shipToAdd = ships.find((ship) => !ship.added);
+    if (shipToAdd.length === 2) {
+      columns.forEach((cell) =>
+        cell.removeEventListener("mouseenter", mouseenterCallback),
       );
-      cells.push(col);
     }
-    if (cells.some((item) => item === null)) {
-      event.target.classList.remove("red");
-      return;
-    }
-    if (cells.some((item) => item.classList.contains("clicked"))) {
-      event.target.classList.remove("red");
-    }
-    cells.forEach((item) => item.classList.remove("hover"));
-  };
-
-  const clickCallback = (event, name) => {
-    if (!event.target.classList.contains("columns")) return;
-    if (!event.target.classList.contains("hover")) return;
-    if (event.target.classList.contains("clicked")) return;
+    if (!shipToAdd) return;
+    const shipToAddIndex = ships.indexOf(shipToAdd);
+    shipToAdd.added = true;
     const required = inputGrid.querySelectorAll(".columns.hover");
-    required.forEach((item) => item.classList.add(name));
+    required.forEach((item) => item.classList.add("ship"));
+    required.forEach((item) => item.classList.add(shipToAdd.name));
+    if (!ships[shipToAddIndex + 1]) return;
+    columns.forEach(
+      (cell) => (cell.shipLength = ships[shipToAddIndex + 1].length),
+    );
   };
 
-  // const ships = [
-  //   { name: "carrier", length: 5 },
-  //   { name: "destroyer", length: 4 },
-  //   { name: "cruiser", length: 3 },
-  //   { name: "submarine", length: 3 },
-  //   { name: "patrol", length: 2 },
-  // ];
+  columns.forEach((cell) => (cell.shipLength = 5));
 
   columns.forEach((cell) =>
-    cell.addEventListener("mouseenter", (event) => {
-      mouseenterCallback(event, 5);
-    }),
+    cell.addEventListener("mouseenter", mouseenterCallback),
   );
 
   columns.forEach((cell) =>
-    cell.addEventListener("mouseleave", (event) => {
-      mouseleaveCallback(event, 5);
-    }),
+    cell.addEventListener("mouseleave", mouseleaveCallback),
   );
 
-  inputGrid.addEventListener("click", (event) => {
-    clickCallback(event, "clicked");
-  });
+  inputGrid.addEventListener("click", clickCallback);
 };
 
 const DOMModuleObject = {

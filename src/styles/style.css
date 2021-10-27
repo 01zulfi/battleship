@@ -9,15 +9,16 @@ div.input-modal {
   margin: 20px;
 }
 
-.hover {
+.input-modal .hover {
   background-color: rgb(128, 128, 128, 0.6);
 }
 
-.clicked {
+.input-modal .ship {
   background-color: gray;
 }
 
-.red {
+.input-modal .red,
+.input-modal .red.ship {
   background-color: red;
 }
 
