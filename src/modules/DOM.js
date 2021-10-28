@@ -68,6 +68,7 @@ const inputShips = () => {
     { name: "cruiser", length: 3, added: false },
     { name: "submarine", length: 3, added: false },
     { name: "patrol", length: 2, added: false },
+    { name: "scout", length: 1, added: false },
   ];
 
   const mouseenterCallbackHorizontal = (event) => {
@@ -140,7 +141,7 @@ const inputShips = () => {
     if (event.target.classList.contains("ship")) return;
     const shipToAdd = ships.find((ship) => !ship.added);
     if (!shipToAdd) return;
-    if (shipToAdd.length === 2) {
+    if (shipToAdd.length === 1) {
       columns.forEach((cell) =>
         cell.removeEventListener("mouseenter", mouseenterCallbackHorizontal),
       );

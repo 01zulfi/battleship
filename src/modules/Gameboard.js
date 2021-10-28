@@ -21,7 +21,6 @@ const Gameboard = () => {
       if (requiredSpace.length < shipLength) return false;
       return requiredSpace.every((element) => element === "");
     }
-
     return "";
   };
 
@@ -73,7 +72,7 @@ const Gameboard = () => {
     }
 
     ship.hit(hitPosition);
-    latestAttackStatus = "success";
+    latestAttackStatus = "success/hit";
   };
 
   return {
@@ -104,7 +103,7 @@ const Gameboard = () => {
             return;
           }
           board[x][y] = "X";
-          latestAttackStatus = "success";
+          latestAttackStatus = "success/miss";
         },
       };
     },
