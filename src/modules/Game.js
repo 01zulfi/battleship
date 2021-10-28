@@ -16,7 +16,9 @@ const computer = Player("computer", Gameboard());
 
 const addPlayerShips = (ships) => {
   for (const ship of ships) {
-    player.fleet.at(ship.x, ship.y).add(Ship(ship.name, ship.length));
+    player.fleet
+      .at(ship.x, ship.y)
+      .add(Ship(ship.name, ship.length), ship.orientation);
   }
   pubsub.publish("fleets-initialized", [
     player.fleet.board,

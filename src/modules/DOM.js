@@ -60,6 +60,8 @@ const renderInputModal = () => {
 const inputShips = () => {
   const inputGrid = document.querySelector(".inputs-gameboard");
   const columns = [...inputGrid.querySelectorAll(".columns")];
+  const rotate = document.querySelector(".rotate");
+  let horizontal = true;
   const ships = [
     { name: "carrier", length: 5, added: false },
     { name: "destroyer", length: 4, added: false },
@@ -68,7 +70,7 @@ const inputShips = () => {
     { name: "patrol", length: 2, added: false },
   ];
 
-  const mouseenterCallback = (event) => {
+  const mouseenterCallbackHorizontal = (event) => {
     const column = Number(event.target.getAttribute("data-columns"));
     const cells = [];
     for (let i = 0; i < event.currentTarget.shipLength; i += 1) {
@@ -85,6 +87,31 @@ const inputShips = () => {
       event.target.classList.add("red");
       return;
     }
+    cells.forEach((item) =>
+      item.setAttribute("data-orientation", "horizontal"),
+    );
+    cells.forEach((item) => item.classList.add("hover"));
+  };
+
+  const mouseenterCallbackVertical = (event) => {
+    const column = Number(event.target.getAttribute("data-columns"));
+    const row = Number(event.target.parentNode.getAttribute("data-rows"));
+    const grid = event.target.parentNode.parentNode;
+    const cells = [];
+    for (let i = 0; i < event.currentTarget.shipLength; i += 1) {
+      const focusRow = grid.querySelector(`[data-rows="${row + i}"]`);
+      if (!focusRow) break;
+      cells.push(focusRow.querySelector(`[data-columns="${column}"]`));
+    }
+    if (cells.length < event.currentTarget.shipLength) {
+      event.target.classList.add("red");
+      return;
+    }
+    if (cells.some((item) => item.classList.contains("ship"))) {
+      event.target.classList.add("red");
+      return;
+    }
+    cells.forEach((item) => item.setAttribute("data-orientation", "vertical"));
     cells.forEach((item) => item.classList.add("hover"));
   };
 
@@ -110,11 +137,15 @@ const inputShips = () => {
   const clickCallback = (event) => {
     if (!event.target.classList.contains("columns")) return;
     if (event.target.classList.contains("red")) return;
+    if (event.target.classList.contains("ship")) return;
     const shipToAdd = ships.find((ship) => !ship.added);
     if (!shipToAdd) return;
     if (shipToAdd.length === 2) {
       columns.forEach((cell) =>
-        cell.removeEventListener("mouseenter", mouseenterCallback),
+        cell.removeEventListener("mouseenter", mouseenterCallbackHorizontal),
+      );
+      columns.forEach((cell) =>
+        cell.removeEventListener("mouseenter", mouseenterCallbackVertical),
       );
       activateReadyDiv();
     }
@@ -122,6 +153,7 @@ const inputShips = () => {
     shipToAdd.added = true;
     shipToAdd.x = Number(event.target.parentNode.getAttribute("data-rows"));
     shipToAdd.y = Number(event.target.getAttribute("data-columns"));
+    shipToAdd.orientation = event.target.getAttribute("data-orientation");
     const required = inputGrid.querySelectorAll(".columns.hover");
     required.forEach((item) => item.classList.add("ship"));
     required.forEach((item) => item.classList.add(shipToAdd.name));
@@ -134,7 +166,7 @@ const inputShips = () => {
   columns.forEach((cell) => (cell.shipLength = 5));
 
   columns.forEach((cell) =>
-    cell.addEventListener("mouseenter", mouseenterCallback),
+    cell.addEventListener("mouseenter", mouseenterCallbackHorizontal),
   );
 
   columns.forEach((cell) =>
@@ -142,6 +174,26 @@ const inputShips = () => {
   );
 
   inputGrid.addEventListener("click", clickCallback);
+
+  rotate.addEventListener("click", () => {
+    if (horizontal) {
+      columns.forEach((cell) =>
+        cell.removeEventListener("mouseenter", mouseenterCallbackHorizontal),
+      );
+      columns.forEach((cell) =>
+        cell.addEventListener("mouseenter", mouseenterCallbackVertical),
+      );
+      horizontal = false;
+    } else {
+      columns.forEach((cell) =>
+        cell.addEventListener("mouseenter", mouseenterCallbackHorizontal),
+      );
+      columns.forEach((cell) =>
+        cell.removeEventListener("mouseenter", mouseenterCallbackVertical),
+      );
+      horizontal = true;
+    }
+  });
 };
 
 const DOMModuleObject = {

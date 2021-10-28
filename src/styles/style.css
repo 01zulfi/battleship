@@ -39,6 +39,11 @@
   cursor: pointer;
 }
 
+.rotate {
+  border: 2px solid blue;
+  padding: 5px;
+}
+
 .gameboards .player-one-gameboard,
 .gameboards .player-two-gameboard,
 .inputs-gameboard {
