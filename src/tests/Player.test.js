@@ -53,9 +53,9 @@ describe("test player", () => {
     ),
   };
 
-  player.fleet.at(0, 0).add(ship1);
-  player.fleet.at(3, 2).add(ship2);
-  computer.fleet.at(0, 0).add(ship3);
+  player.fleet.at(0, 0).add(ship1, "horizontal");
+  player.fleet.at(3, 2).add(ship2, "vertical");
+  computer.fleet.at(0, 0).add(ship3, "horizontal");
 
   test("returns correct player name", () => {
     expect(player.name).toMatch(/player/);
@@ -72,11 +72,12 @@ describe("test player", () => {
     expect(computer.fleet.shipsArray[0].isHitAt(3)).toBe(true);
 
     computer.attack(player).at(3, 2);
-    computer.attack(player).at(3, 3);
-    computer.attack(player).at(3, 4);
-    computer.attack(player).at(3, 5);
-    computer.attack(player).at(3, 6);
-    expect(player.fleet.shipsArray[1].isHitAt(2)).toBe(true);
+    computer.attack(player).at(4, 2);
+    computer.attack(player).at(5, 2);
+    computer.attack(player).at(6, 2);
+    computer.attack(player).at(7, 2);
+
+    expect(player.fleet.shipsArray[1].isHitAt(0)).toBe(true);
     expect(player.fleet.shipsArray[1].isHitAt(4)).toBe(true);
     expect(player.fleet.shipsArray[1].isSunk()).toBe(true);
 

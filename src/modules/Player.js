@@ -27,7 +27,10 @@ const Player = (name, fleet) => {
     autoAdd(ship) {
       const x = Math.floor(Math.random() * 10);
       const y = Math.floor(Math.random() * 10);
-      fleet.at(x, y).add(ship);
+      const orientations = ["horizontal", "vertical"];
+      const orientation = orientations[Math.floor(Math.random() * 2)];
+
+      fleet.at(x, y).add(ship, orientation);
 
       if (!fleet.shipsArray.includes(ship)) {
         this.autoAdd(ship);

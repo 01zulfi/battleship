@@ -38,13 +38,21 @@ describe("test Gameboard", () => {
   const ship3 = {
     name: "thirdShip",
     length: 2,
-    hit: jest.fn(),
+    hit: jest.fn((position) => {
+      ship3.shipArray[position] = "hit";
+      return "Hit";
+    }),
     shipArray: ["", ""],
-    isSunk: jest.fn(() => true),
+    isHitAt: jest.fn((position) => {
+      return [...ship3.shipArray][position] === "hit";
+    }),
+    isSunk: jest.fn(() =>
+      [...ship3.shipArray].every((element) => element === "hit"),
+    ),
   };
 
   test("place ships on the board", () => {
-    gameboard.at(0, 0).add(ship1);
+    gameboard.at(0, 0).add(ship1, "horizontal");
     expect(gameboard.board).toEqual([
       [ship1, ship1, ship1, ship1, ship1, "", "", "", "", ""],
       Array(10).fill(""),
@@ -58,7 +66,7 @@ describe("test Gameboard", () => {
       Array(10).fill(""),
     ]);
 
-    gameboard.at(3, 5).add(ship2);
+    gameboard.at(3, 5).add(ship2, "horizontal");
     expect(gameboard.board).toEqual([
       [ship1, ship1, ship1, ship1, ship1, "", "", "", "", ""],
       Array(10).fill(""),
@@ -73,17 +81,49 @@ describe("test Gameboard", () => {
     ]);
   });
 
+  test("place ships on board vertically", () => {
+    const newBoard = Gameboard();
+    newBoard.at(0, 0).add(ship1, "vertical");
+    expect(newBoard.board).toEqual([
+      [ship1, "", "", "", "", "", "", "", "", ""],
+      [ship1, "", "", "", "", "", "", "", "", ""],
+      [ship1, "", "", "", "", "", "", "", "", ""],
+      [ship1, "", "", "", "", "", "", "", "", ""],
+      [ship1, "", "", "", "", "", "", "", "", ""],
+      Array(10).fill(""),
+      Array(10).fill(""),
+      Array(10).fill(""),
+      Array(10).fill(""),
+      Array(10).fill(""),
+    ]);
+  });
+
   test("adds ships to ships array", () => {
     expect(gameboard.shipsArray).toContainEqual(ship1);
     expect(gameboard.shipsArray).toContainEqual(ship2);
   });
 
   test("does not place ships if overlaps", () => {
-    gameboard.at(0, 3).add(ship3);
+    gameboard.at(0, 3).add(ship3, "horizontal");
     expect(gameboard.shipsArray).not.toContainEqual(ship3);
     expect(gameboard.board).toEqual([
       [ship1, ship1, ship1, ship1, ship1, "", "", "", "", ""],
       Array(10).fill(""),
+      Array(10).fill(""),
+      ["", "", "", "", "", ship2, ship2, "", "", ""],
+      Array(10).fill(""),
+      Array(10).fill(""),
+      Array(10).fill(""),
+      Array(10).fill(""),
+      Array(10).fill(""),
+      Array(10).fill(""),
+    ]);
+
+    gameboard.at(0, 3).add(ship3, "vertical");
+    expect(gameboard.shipsArray).not.toContainEqual(ship3);
+    expect(gameboard.board).toEqual([
+      [ship1, ship1, ship1, ship1, ship1, "", "", "", "", ""],
+      ["", "", "", "", "", "", "", "", "", ""],
       Array(10).fill(""),
       ["", "", "", "", "", ship2, ship2, "", "", ""],
       Array(10).fill(""),
@@ -101,7 +141,7 @@ describe("test Gameboard", () => {
     gameboard.at(3, 4).receiveAttack();
     expect(gameboard.board).toEqual([
       [ship1, ship1, ship1, ship1, ship1, "", "", "", "", "X"],
-      Array(10).fill(""),
+      ["", "", "", "", "", "", "", "", "", ""],
       Array(10).fill(""),
       ["X", "", "", "", "X", ship2, ship2, "", "", ""],
       Array(10).fill(""),
@@ -145,6 +185,56 @@ describe("test Gameboard", () => {
     gameboard.at(0, 2).receiveAttack();
     gameboard.at(0, 3).receiveAttack();
     gameboard.at(3, 5).receiveAttack();
+    gameboard.at(0, 5).receiveAttack();
+    gameboard.at(1, 5).receiveAttack();
     expect(gameboard.areAllShipsSunk()).toBe(true);
+  });
+});
+
+describe("test vertical", () => {
+  test("check", () => {
+    const ship = {
+      name: "ship",
+      length: 5,
+      hit: jest.fn((position) => {
+        ship.shipArray[position] = "hit";
+      }),
+      shipArray: ["", "", "", "", ""],
+      isHitAt: jest.fn((position) => {
+        return [...ship.shipArray][position] === "hit";
+      }),
+      isSunk: jest.fn(() =>
+        [...ship.shipArray].every((element) => element === "hit"),
+      ),
+    };
+    const gameboard = Gameboard();
+    gameboard.at(9, 4).add(ship, "vertical");
+    expect(gameboard.shipsArray.length).toBe(0);
+    gameboard.at(3, 9).add(ship, "vertical");
+    expect(gameboard.shipsArray).toContainEqual(ship);
+    expect(gameboard.board).toEqual([
+      Array(10).fill(""),
+      Array(10).fill(""),
+      Array(10).fill(""),
+      ["", "", "", "", "", "", "", "", "", ship],
+      ["", "", "", "", "", "", "", "", "", ship],
+      ["", "", "", "", "", "", "", "", "", ship],
+      ["", "", "", "", "", "", "", "", "", ship],
+      ["", "", "", "", "", "", "", "", "", ship],
+      Array(10).fill(""),
+      Array(10).fill(""),
+    ]);
+    gameboard.at(4, 9).receiveAttack();
+    expect(gameboard.latestAttackStatus).toMatch(/success/);
+    expect(ship.hit.mock.calls.length).toBe(1);
+    expect(ship.hit.mock.calls[0][0]).toBe(1);
+    expect(gameboard.shipsArray[0].isHitAt(1)).toBe(true);
+    gameboard.at(3, 9).receiveAttack();
+    gameboard.at(5, 9).receiveAttack();
+    gameboard.at(6, 9).receiveAttack();
+    gameboard.at(7, 9).receiveAttack();
+    expect(ship.hit.mock.calls.length).toBe(5);
+    expect(ship.isSunk()).toBe(true);
+    expect(gameboard.areAllShipsSunk());
   });
 });
