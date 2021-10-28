@@ -6,19 +6,12 @@ import pubsub from "./Pubsub";
 const player = Player("player", Gameboard());
 const computer = Player("computer", Gameboard());
 
-(() => {
-  computer.autoAdd(Ship("carrier", 5));
-  computer.autoAdd(Ship("destroyer", 4));
-  computer.autoAdd(Ship("cruiser", 3));
-  computer.autoAdd(Ship("submarine", 3));
-  computer.autoAdd(Ship("patrol", 2));
-})();
-
-const addPlayerShips = (ships) => {
+const addShips = (ships) => {
   for (const ship of ships) {
     player.fleet
       .at(ship.x, ship.y)
       .add(Ship(ship.name, ship.length), ship.orientation);
+    computer.autoAdd(Ship(ship.name, ship.length));
   }
   pubsub.publish("fleets-initialized", [
     player.fleet.board,
@@ -44,7 +37,7 @@ const playerAttackShip = ([x, y]) => {
 
 const gameModuleObject = {
   execute() {
-    pubsub.subscribe("input-ships", addPlayerShips);
+    pubsub.subscribe("input-ships", addShips);
     pubsub.subscribe("player-attack-ship", playerAttackShip);
   },
 };
