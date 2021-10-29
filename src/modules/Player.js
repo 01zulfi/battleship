@@ -28,8 +28,18 @@ const Player = (name, fleet) => {
         auto() {
           useTargetArea(targetArea);
 
-          const x = hitPosition.x || Math.floor(Math.random() * 10);
-          const y = hitPosition.y || Math.floor(Math.random() * 10);
+          const x = (() => {
+            if (hitPosition.x === undefined) {
+              return Math.floor(Math.random() * 10);
+            }
+            return hitPosition.x;
+          })();
+          const y = (() => {
+            if (hitPosition.y === undefined) {
+              return Math.floor(Math.random() * 10);
+            }
+            return hitPosition.y;
+          })();
 
           enemy.fleet.at(x, y).receiveAttack(x, y);
 
@@ -38,12 +48,19 @@ const Player = (name, fleet) => {
           }
 
           if (enemy.fleet.latestAttackStatus === "success/hit") {
-            targetArea = [
-              { x, y: y + 1 },
-              { x, y: y - 1 },
-              { x: x + 1, y },
-              { x: x - 1, y },
-            ];
+            targetArea = [];
+            if (y + 1 <= 9) {
+              targetArea.push({ x, y: y + 1 });
+            }
+            if (y - 1 >= 0) {
+              targetArea.push({ x, y: y - 1 });
+            }
+            if (x + 1 <= 9) {
+              targetArea.push({ x: x + 1, y });
+            }
+            if (x - 1 >= 0) {
+              targetArea.push({ x: x - 1, y });
+            }
           }
 
           return [x, y];
