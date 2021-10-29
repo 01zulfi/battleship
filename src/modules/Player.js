@@ -1,6 +1,18 @@
 const Player = (name, fleet) => {
   const hitPosition = { x: undefined, y: undefined };
-  const recordLatestAttackStatus = [];
+  let targetArea = [];
+
+  const useTargetArea = (target) => {
+    if (target.length === 0) {
+      hitPosition.x = undefined;
+      hitPosition.y = undefined;
+      return;
+    }
+    hitPosition.x = target[0].x;
+    hitPosition.y = target[0].y;
+    targetArea.splice(0, 1);
+  };
+
   return {
     get name() {
       return name;
@@ -14,6 +26,8 @@ const Player = (name, fleet) => {
           enemy.fleet.at(x, y).receiveAttack(x, y);
         },
         auto() {
+          useTargetArea(targetArea);
+
           const x = hitPosition.x || Math.floor(Math.random() * 10);
           const y = hitPosition.y || Math.floor(Math.random() * 10);
 
@@ -23,46 +37,15 @@ const Player = (name, fleet) => {
             return this.auto();
           }
 
-          recordLatestAttackStatus.push(enemy.fleet.latestAttackStatus);
-
-          if (enemy.fleet.latestAttackStatus === "success/miss") {
-            hitPosition.x = undefined;
-            hitPosition.y = undefined;
-          } else if (
-            recordLatestAttackStatus[recordLatestAttackStatus.length - 1] ===
-            "success/hit"
-          ) {
-            hitPosition.x = x;
-            hitPosition.y = y + 1;
-          } else if (
-            recordLatestAttackStatus[recordLatestAttackStatus.length - 2] ===
-            "success/hit"
-          ) {
-            hitPosition.x = x;
-            hitPosition.y = y - 1;
-          } else if (
-            recordLatestAttackStatus[recordLatestAttackStatus.length - 3] ===
-            "success/hit"
-          ) {
-            hitPosition.x = x + 1;
-            hitPosition.y = y;
-          } else if (
-            recordLatestAttackStatus[recordLatestAttackStatus.length - 4] ===
-            "success/hit"
-          ) {
-            hitPosition.x = x - 1;
-            hitPosition.y = y;
+          if (enemy.fleet.latestAttackStatus === "success/hit") {
+            targetArea = [
+              { x, y: y + 1 },
+              { x, y: y - 1 },
+              { x: x + 1, y },
+              { x: x - 1, y },
+            ];
           }
 
-          if (recordLatestAttackStatus.length > 4) {
-            recordLatestAttackStatus.splice(0);
-            hitPosition.x = undefined;
-            hitPosition.y = undefined;
-          }
-
-          console.log(recordLatestAttackStatus);
-          console.log(hitPosition);
-          console.log(x, y);
           return [x, y];
         },
       };
