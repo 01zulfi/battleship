@@ -54,7 +54,7 @@ const showAlert = (victor) => {
 const renderInputModal = () => {
   const inputModalDiv = document.querySelector(".input-modal");
   const inputGrid = createGameboard("inputs-gameboard", []);
-  inputModalDiv.append(inputGrid);
+  inputModalDiv.insertBefore(inputGrid, document.querySelector(".ready"));
 };
 
 const inputShips = () => {
@@ -158,7 +158,15 @@ const inputShips = () => {
     const required = inputGrid.querySelectorAll(".columns.hover");
     required.forEach((item) => item.classList.add("ship"));
     required.forEach((item) => item.classList.add(shipToAdd.name));
+    const placeShipMessageDiv = document.querySelector(".place-ship-message");
+    if (shipToAdd.length === 1) {
+      placeShipMessageDiv.textContent =
+        "All ships placed, move to battleground!";
+    }
     if (!ships[shipToAddIndex + 1]) return;
+    placeShipMessageDiv.textContent = `Place your ${
+      ships[shipToAddIndex + 1].name
+    }!`;
     columns.forEach(
       (cell) => (cell.shipLength = ships[shipToAddIndex + 1].length),
     );

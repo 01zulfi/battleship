@@ -1,14 +1,96 @@
-.gameboards {
-  display: flex;
-  flex-direction: row;
-  gap: 1vw;
-}
-
-.input-modal {
-  margin: 20px;
+body {
+  background-color: #121212;
+  color: white;
   display: flex;
   flex-direction: column;
   align-items: center;
+}
+
+h1 {
+  text-align: center;
+  width: 95%;
+  background-color: rgb(255, 255, 255, 0.05);
+  border-radius: 5px;
+  box-shadow: 0px 15px 30px rgb(0 0 0 / 15%);
+}
+
+.input-modal {
+  width: 95%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background-color: rgb(255, 255, 255, 0.05);
+  padding: 5px;
+  padding-top: 10px;
+  padding-bottom: 10px;
+  border-radius: 5px;
+  gap: 5px;
+}
+
+h2 {
+  width: 95%;
+  background-color: rgb(255, 255, 255, 0.07);
+  border-radius: 5px;
+  text-align: center;
+  padding: 5px;
+}
+
+h3 {
+  color: #e1bee7;
+  width: 95%;
+  text-align: center;
+  padding: 5px;
+  font-size: 25px;
+  background-color: rgb(255, 255, 255, 0.07);
+}
+
+.input-modal .ready,
+.input-modal .rotate {
+  width: 35%;
+  border-radius: 5px;
+  font-size: 20px;
+  text-align: center;
+  border: 2px solid black;
+}
+
+.ready {
+  pointer-events: none;
+  opacity: 0.5;
+  background-color: #ffebee;
+  color: black;
+}
+
+.ready.active {
+  pointer-events: auto;
+  opacity: 1;
+  animation: ready-button 2s infinite;
+  animation-direction: alternate;
+  animation-timing-function: linear;
+  font-weight: bold;
+}
+
+.ready.active:hover {
+  cursor: pointer;
+}
+
+@keyframes ready-button {
+  0% {
+    background-color: #784682;
+  }
+  20% {
+    background-color: #834c89;
+  }
+  80% {
+    background-color: #c09cc4;
+  }
+  100% {
+    background-color: #efe7f0;
+  }
+}
+
+.rotate {
+  background-color: rgb(0, 131, 143);
+  color: black;
 }
 
 .input-modal .hover {
@@ -21,36 +103,29 @@
 
 .input-modal .red,
 .input-modal .red.ship {
-  background-color: red;
+  background-color: #ef5350;
 }
 
-.ready {
-  pointer-events: none;
-  opacity: 0.7;
-  border: 2px solid black;
+.inputs-gameboard {
+  margin-top: 5px;
+  margin-bottom: 5px;
 }
 
-.ready.active {
-  pointer-events: auto;
-  opacity: 1;
-}
-
-.ready.active:hover {
-  cursor: pointer;
-}
-
-.rotate {
-  border: 2px solid blue;
-  padding: 5px;
+.gameboards {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1vw;
+  width: 95%;
 }
 
 .gameboards .player-one-gameboard,
 .gameboards .player-two-gameboard,
 .inputs-gameboard {
-  width: 38vw;
+  width: 95%;
   aspect-ratio: 1;
   display: flex;
-  gap: 4px;
+  row-gap: 2px;
   flex-direction: column;
   justify-content: flex-start;
   align-items: flex-start;
@@ -67,10 +142,14 @@
 }
 
 .player-one-gameboard .columns,
-.player-two-gameboard .columns,
-.inputs-gameboard .columns {
+.player-two-gameboard .columns {
   flex: 1;
   border: 1px solid black;
+}
+
+.inputs-gameboard .columns {
+  flex: 1;
+  border: 1px solid rgb(255, 255, 255, 0.5);
 }
 
 .player-one-gameboard .rows .columns.ship {
