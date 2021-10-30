@@ -40,15 +40,26 @@ const createGameboard = (name, board) => {
 
 const appendGameboards = ([playerBoard, computerBoard]) => {
   const gameboards = document.querySelector(".gameboards");
-  gameboards.append(createGameboard("player-one-gameboard", playerBoard));
-  gameboards.append(createGameboard("player-two-gameboard", computerBoard));
-};
-
-const showAlert = (victor) => {
-  document
-    .querySelector(".player-two-gameboard")
-    .removeEventListener("click", sendPlayerAttack);
-  alert(victor);
+  const playerOneSection = DOMFactory("div", { className: "player-section" });
+  const playerOneHeader = DOMFactory("h2", {
+    className: "player-header",
+    textContent: "You",
+  });
+  const playerTwoSection = DOMFactory("div", { className: "player-section" });
+  const playerTwoHeader = DOMFactory("h2", {
+    className: "player-header",
+    textContent: "Computer",
+  });
+  playerOneSection.append(
+    playerOneHeader,
+    createGameboard("player-one-gameboard", playerBoard),
+  );
+  playerTwoSection.append(
+    playerTwoHeader,
+    createGameboard("player-two-gameboard", computerBoard),
+  );
+  gameboards.append(playerOneSection);
+  gameboards.append(playerTwoSection);
 };
 
 const renderInputModal = () => {
@@ -62,7 +73,7 @@ const inputShips = () => {
   const columns = [...inputGrid.querySelectorAll(".columns")];
   const rotate = document.querySelector(".rotate");
   let horizontal = true;
-  const ships = [
+  let ships = [
     { name: "carrier", length: 5, added: false },
     { name: "destroyer", length: 4, added: false },
     { name: "cruiser", length: 3, added: false },
@@ -123,16 +134,30 @@ const inputShips = () => {
       .forEach((item) => item.classList.remove("hover"));
   };
 
-  const removeInputModal = () => {
+  const shipsReset = () => {
+    ships = [
+      { name: "carrier", length: 5, added: false },
+      { name: "destroyer", length: 4, added: false },
+      { name: "cruiser", length: 3, added: false },
+      { name: "submarine", length: 3, added: false },
+      { name: "patrol", length: 2, added: false },
+      { name: "scout", length: 1, added: false },
+    ];
+  };
+
+  const hideInputModal = () => {
+    if (ships[0].x === undefined) return; // return when no ships entered
     const inputModal = document.querySelector(".input-modal");
-    inputModal.remove();
+    inputGrid.remove();
+    inputModal.style.display = "none";
     pubsub.publish("input-ships", ships);
+    shipsReset();
   };
 
   const activateReadyDiv = () => {
     const readyDiv = document.querySelector(".ready");
     readyDiv.classList.add("active");
-    readyDiv.addEventListener("click", removeInputModal);
+    readyDiv.addEventListener("click", hideInputModal);
   };
 
   const clickCallback = (event) => {
@@ -203,6 +228,44 @@ const inputShips = () => {
       horizontal = true;
     }
   });
+};
+
+const removePlayerSections = () => {
+  const playerSections = document.querySelectorAll(".player-section");
+  playerSections.forEach((section) => section.remove());
+};
+
+const restartGame = () => {
+  removePlayerSections();
+  const gameEndModal = document.querySelector(".game-end-modal");
+  gameEndModal.style.display = "none";
+  const inputModal = document.querySelector(".input-modal");
+  inputModal.style.display = "flex";
+  renderInputModal();
+  inputShips();
+  const placeShipMessageDiv = document.querySelector(".place-ship-message");
+  placeShipMessageDiv.textContent = "Place your carrier!";
+  pubsub.publish("restart-game");
+};
+
+const openGameEndModal = (victor) => {
+  const gameEndModal = document.querySelector(".game-end-modal");
+  gameEndModal.style.display = "block";
+  const text = document.querySelector(".game-end-modal .text");
+  text.textContent = `${victor} won!`;
+  const restart = document.querySelector(".game-end-modal .restart");
+  restart.addEventListener("click", restartGame);
+  const close = document.querySelector(".game-end-modal .close");
+  close.addEventListener("click", () => {
+    gameEndModal.style.display = "none";
+  });
+};
+
+const showAlert = (victor) => {
+  document
+    .querySelector(".player-two-gameboard")
+    .removeEventListener("click", sendPlayerAttack);
+  openGameEndModal(victor);
 };
 
 const DOMModuleObject = {
