@@ -45,17 +45,25 @@ const appendGameboards = ([playerBoard, computerBoard]) => {
     className: "player-header",
     textContent: "You",
   });
+  const playerOneMessage = DOMFactory("div", {
+    className: "player-one-message",
+  });
   const playerTwoSection = DOMFactory("div", { className: "player-section" });
   const playerTwoHeader = DOMFactory("h2", {
     className: "player-header",
     textContent: "Computer",
   });
+  const playerTwoMessage = DOMFactory("div", {
+    className: "player-two-message",
+  });
   playerOneSection.append(
     playerOneHeader,
+    playerOneMessage,
     createGameboard("player-one-gameboard", playerBoard),
   );
   playerTwoSection.append(
     playerTwoHeader,
+    playerTwoMessage,
     createGameboard("player-two-gameboard", computerBoard),
   );
   gameboards.append(playerOneSection);
@@ -268,12 +276,54 @@ const showAlert = (victor) => {
   openGameEndModal(victor);
 };
 
+const renderAttackMessage = ({ recipient, message }) => {
+  const messageGenerator = (player, msg) => {
+    if (msg === "success/hit") {
+      if (player === "player") {
+        return "Computer hit your fleet!";
+      }
+      if (player === "computer") {
+        return "You successfully hit a computer ship!";
+      }
+    }
+    if (msg === "success/miss") {
+      if (player === "player") {
+        return "Computer's attack missed!";
+      }
+      return "Your attack missed!";
+    }
+    return "";
+  };
+  if (recipient === "player") {
+    const messageDiv = document.querySelector(".player-one-message");
+    messageDiv.textContent = messageGenerator("player", message);
+    if (message === "success/hit") {
+      messageDiv.classList.remove("miss");
+      messageDiv.classList.add("hit");
+    } else if (message === "success/miss") {
+      messageDiv.classList.add("miss");
+      messageDiv.classList.remove("hit");
+    }
+  } else if (recipient === "computer") {
+    const messageDiv = document.querySelector(".player-two-message");
+    messageDiv.textContent = messageGenerator("computer", message);
+    if (message === "success/hit") {
+      messageDiv.classList.remove("miss");
+      messageDiv.classList.add("hit");
+    } else if (message === "success/miss") {
+      messageDiv.classList.add("miss");
+      messageDiv.classList.remove("hit");
+    }
+  }
+};
+
 const DOMModuleObject = {
   execute() {
     renderInputModal();
     inputShips();
     pubsub.subscribe("fleets-initialized", appendGameboards);
     pubsub.subscribe("computer-attack-ship", receiveComputerAttack);
+    pubsub.subscribe("attack-message", renderAttackMessage);
     pubsub.subscribe("game-end", showAlert);
   },
 };

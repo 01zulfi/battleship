@@ -25,6 +25,10 @@ const computerAttackShip = () => {
   if (player.fleet.areAllShipsSunk()) {
     pubsub.publish("game-end", "Computer");
   }
+  pubsub.publish("attack-message", {
+    recipient: "player",
+    message: player.fleet.latestAttackStatus,
+  });
 };
 
 const playerAttackShip = ([x, y]) => {
@@ -32,6 +36,10 @@ const playerAttackShip = ([x, y]) => {
   if (computer.fleet.areAllShipsSunk()) {
     pubsub.publish("game-end", "You");
   }
+  pubsub.publish("attack-message", {
+    recipient: "computer",
+    message: computer.fleet.latestAttackStatus,
+  });
   computerAttackShip();
 };
 

@@ -147,6 +147,27 @@ h3 {
   background-color: rgb(237, 231, 246, 0.5);
 }
 
+.player-one-message,
+.player-two-message {
+  width: 95%;
+  font-size: 18px;
+  background-color: rgb(237, 231, 246, 0.1);
+  text-align: center;
+  margin-bottom: 10px;
+  border-radius: 5px;
+  padding: 5px;
+}
+
+.player-one-message.miss,
+.player-two-message.miss {
+  color: #a7ffeb;
+}
+
+.player-one-message.hit,
+.player-two-message.hit {
+  color: #ce93d8;
+}
+
 .gameboards .player-one-gameboard,
 .gameboards .player-two-gameboard,
 .inputs-gameboard {
