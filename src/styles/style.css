@@ -1,3 +1,8 @@
+@font-face {
+  font-family: "press-start";
+  src: url(../fonts/PressStart2P-Regular.ttf);
+}
+
 body {
   background-color: #121212;
   color: white;
@@ -7,6 +12,8 @@ body {
 }
 
 h1 {
+  font-family: "press-start", sans-serif;
+  padding: 5px;
   text-align: center;
   width: 95%;
   background-color: rgb(255, 255, 255, 0.05);
@@ -29,6 +36,7 @@ h1 {
 
 h2 {
   width: 95%;
+  font-family: "press-start", sans-serif;
   background-color: rgb(255, 255, 255, 0.07);
   border-radius: 5px;
   text-align: center;
@@ -155,17 +163,18 @@ h3 {
   text-align: center;
   margin-bottom: 10px;
   border-radius: 5px;
-  padding: 5px;
 }
 
 .player-one-message.miss,
 .player-two-message.miss {
   color: #a7ffeb;
+  padding: 5px;
 }
 
 .player-one-message.hit,
 .player-two-message.hit {
   color: #ce93d8;
+  padding: 5px;
 }
 
 .gameboards .player-one-gameboard,
