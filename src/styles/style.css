@@ -213,7 +213,7 @@ h3 {
 }
 
 .player-one-gameboard .rows .columns.ship {
-  background-color: black;
+  background-color: white;
 }
 
 .player-one-gameboard .rows .columns.ship.hit,
