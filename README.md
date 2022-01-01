@@ -4,7 +4,7 @@ Classic battleship game written in Vanilla JS using the TDD approach
 
 ## Live Demo
 
-[Click to visit](https://xari4808.github.io/battleship/)
+[Click to visit](https://01zulfi.github.io/battleship/)
 
 ## Features
 
