@@ -10,14 +10,14 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/xari4808/battleship.git"
+    "url": "git+https://github.com/01zulfi/battleship.git"
   },
   "author": "xari",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/xari4808/battleship/issues"
+    "url": "https://github.com/01zulfi/battleship/issues"
   },
-  "homepage": "https://github.com/xari4808/battleship#readme",
+  "homepage": "https://github.com/01zulfi/battleship#readme",
   "devDependencies": {
     "@babel/core": "^7.15.8",
     "@babel/preset-env": "^7.15.8",
